@@ -1,18 +1,104 @@
-// // create a Pokemon class 
 
 const gameSettings = {
     playerNum: 2, // default 2 players 
     pokeDex: 151,
     pokeNum: 3,
     playerNames: ['rhine', 'chris'],
+    typeMatchUp: {},
+}
+
+const defaultTypeObj = {
+    "flying":1,
+    "fairy":1, 
+    "rock":1, 
+    "grass":1, 
+    "ice":1, 
+    "dark":1, 
+    "normal":1, 
+    "poison":1, 
+    "water":1, 
+    "bug":1, 
+    "ghost":1, 
+    "dragon":1, 
+    "fire":1, 
+    "electric":1, 
+    "fighting":1, 
+    "psychic":1, 
+    "steel":1, 
+    "ground":1
+}
+
+
+let getTypeMatchById = [];
+
+const initTypeMatch = function() {
+    for (let i = 1; i < 19; i++) {
+    
+    getTypeMatchById.push(
+            $.ajax({
+                url: `https://pokeapi.co/api/v2/type/${i}`
+
+            }).then(
+                (data) => {
+
+                    gameSettings.typeMatchUp[data.name] = { ...defaultTypeObj}
+
+                    data['damage_relations']['double_damage_to'].forEach(type => {
+                        gameSettings.typeMatchUp[data.name][type.name] = 2
+                    })
+
+                    data['damage_relations']['half_damage_to'].forEach(type => {
+                        gameSettings.typeMatchUp[data.name][type.name] = 0.5
+                    })
+
+                    data['damage_relations']['no_damage_to'].forEach(type => {
+                        gameSettings.typeMatchUp[data.name][type.name] = 0
+                    })
+
+                },
+
+                (error) => {
+                    console.log('bad request: ',error);
+                })
+    )}
+}
+
+initTypeMatch()
+
+$.when.apply($, getTypeMatchById).done(function() {
+    
+    initPokemon()
+
+    $.when.apply($, getPokemonById).done(function() {
+
+        initPlayers()
+
+    })
+    
+})
+
+const getAllTypes = function (pokeDetails) {
+    let types = [];
+    pokeDetails.types.forEach (type => {
+        types.push(type.type.name)
+    })
+    return types
+}
+
+const getRandomMove = function(pokeDetails) {
+
 }
 
 class Pokemon {
-    constructor(id, name, types, moves) {
+    constructor(id, pokeDetails) {
         this.id = id,
-        this.name = name,
-        this.type = types[0]['type']
-        this.move = moves[0]['move']
+        this.name = pokeDetails.name,
+        this.types = getAllTypes(pokeDetails), // can have 1 or 2 types 
+        this.move = pokeDetails.moves[0]['move'], // choose a random move - this needs to be a Move object 
+        this.hp = pokeDetails.stats[0]['base_stat'],
+        this.attack = pokeDetails.stats[1]['base_stat'],
+        this.defense = pokeDetails.stats[2]['base_stat'],
+        this.pics = pokeDetails.pics
     }
 
     // attack() {
@@ -55,7 +141,7 @@ let players = [];
 
 const initPokemon = function () {
 
-    let randomID, pokeID, pokeName, pokeTypes, pokeMoves;
+    let randomID, pokeID;
     
     for (let i = 0; i < gameSettings.pokeNum * gameSettings.playerNum; i++) {
 
@@ -71,15 +157,18 @@ const initPokemon = function () {
             }).then(
                 (data) => {
                     
-                    // console.log(pokeID) // tester
-                    // console.log(data) // tester
-                    
                     pokeID = data.id;
-                    pokeName = data.name;
-                    pokeTypes = data.types;
-                    pokeMoves = data.moves;
-                
-                    newPokemonList.push(new Pokemon(pokeID, pokeName, pokeTypes, pokeMoves))
+                    pokeDetails = {
+                        name: data.name,
+                        types: data.types,
+                        moves: data.moves,
+                        stats: data.stats,
+                        pics: data.sprites,
+                    }
+
+                    // console.log(pokeDetails)
+
+                    newPokemonList.push(new Pokemon(pokeID, pokeDetails))
 
                 },
 
@@ -101,11 +190,5 @@ const initPlayers = function() {
         
 }
 
-initPokemon()
 
-$.when.apply($, getPokemonById).done(function() {
-    console.log(newPokemonList)
-    initPlayers()
-    console.log(players)
-})
 
