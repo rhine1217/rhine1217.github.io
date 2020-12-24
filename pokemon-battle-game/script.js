@@ -44,17 +44,58 @@ class Pokemon {
         this.pics = pokeDetails.pics
     }
 
-    // attack() {
+    dealDamage(target) { // target is a Pokemon
 
-    // } 
+        const coE = {
+            overall: 0.1,
+            constant: 1,
+            sameTypeBonus: 1.25,
+            randomLower: 15,
+            randomUpper: 100,
+        }
+        
+        // Damage calc formula: 0.1 * P * A / D * M + 1
+        // P = Power of the move of the attacking Pokemon
+        // A = Attack of the attacking Pokemon
+        // D = Defense of the defending Pokemon 
+        // M = Modifier = Random * STAB * TypeEffectiveness
+            // Random = Random integer percentage between 0.85 and 1.00 (inclusive) 
+            // STAB = Same Type Attack Bonus;  1.25 if Move type matches attacking Pokemon's type; else = 1 
+            // TypeEffectiveness = Move (attacking Pokemon) type effectiveness against defending Pokemon's types 
+        
+        let p, a, d, m, random, damageNum;
+        let stab = 1, typeE = 1;
 
-    // takeDamage() {
+        p = this.move.power
+        a = this.attack
+        d = target.defense
+        random = Math.floor ( Math.random() * coE.randomLower + (coE.randomUpper - coE.randomLower) ) / 100
 
-    // }
+        for (let i = 0; i < this.types.length; i++) {
+            stab *= (this.move.type === this.types[i]) ? coE.sameTypeBonus : 1;
+        }
 
-    // isAlive() {
+        for (let i = 0; i < target.types.length; i++) {
+            typeE *= gameSettings.typeMatchUp[this.move.type][target.types[i]]
+        }
 
-    // }
+        m = random * stab * typeE
+
+        damageNum = Math.round(coE.overall * p * a / d * m + coE.constant) 
+
+        console.log (`${upperFirstLetter(this.name)} used ${upperFirstLetter(this.move.name)} on ${upperFirstLetter(target.name)} and dealt ${damageNum} damage!`)
+
+        return damageNum
+
+    } 
+
+    takeDamage(damageNum) {
+        this.hp = (damageNum >= this.hp)? 0 : this.hp - damageNum 
+    }
+
+    isAlive() {
+        return this.hp === 0
+    }
 
 }
 
@@ -66,15 +107,8 @@ class Player {
     }
 }
 
-/* Define helper variables for initializing Pokemons and Players */
 
-let getTypeMatchById = []; // list of all the API Calls to get the type match up table 
-let getPokemonById = []; // list of all the API Calls to get Pokemon details (* 6 times)
-let getMoveByUrl; // API call to get Move details (1 per Pokemon)
-let newPokemonList = []; // store all the generated Pokemons
-let players = []; // store the Players
-
-/* Helper Functions */
+/* Misc Helper Functions */
 
 const getAllTypes = function (pokeDetails) {
     let types = [];
@@ -84,6 +118,17 @@ const getAllTypes = function (pokeDetails) {
     return types
 }
 
+const upperFirstLetter = function (str) {
+    return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
+/* Define helper variables for initializing Pokemons and Players */
+
+let getTypeMatchById = []; // list of all the API Calls to get the type match up table 
+let getPokemonById = []; // list of all the API Calls to get Pokemon details (* 6 times)
+let getMoveByUrl = []; // API call to get Move details (1 per Pokemon)
+let newPokemonList = []; // store all the generated Pokemons
+let players = []; // store the Players
 
 /* Main Functions for Initializing */
 
@@ -135,32 +180,13 @@ const initPokemon = function () {
                     const pokeDetails = {
                         name: data.name,
                         types: data.types,
-                        move: null,
+                        move: data.moves,
                         stats: data.stats,
                         pics: data.sprites,
                     }
-                    const moveDetails = {
-                        power: null,
-                        type: null,
-                        name: null,
-                    };
 
-                    let moveUrl = data.moves[Math.floor(Math.random() * data.moves.length) + 1].move.url
+                    newPokemonList.push(new Pokemon(pokeID, pokeDetails))
 
-                    initMove(moveUrl, moveDetails)
-
-                    const getNewMove = function() {
-                        if (moveDetails.power !== null) {
-                            pokeDetails.move = moveDetails 
-                            newPokemonList.push(new Pokemon(pokeID, pokeDetails))
-                        } else {
-                            moveUrl = data.moves[Math.floor(Math.random() * data.moves.length) + 1].move.url
-                            initMove(moveUrl, moveDetails)
-                            $.when(getMoveByUrl).done(getNewMove)
-                        }
-                    }
-
-                    $.when(getMoveByUrl).done(getNewMove);
                 },
                 (error) => {
                     console.log('bad request: ',error);
@@ -182,19 +208,35 @@ const initPlayers = function() {
 
 // Initialize a random move for each Pokemon (used in initPokemon function)
 
-const initMove = function(moveUrl, moveDetails) {
-    getMoveByUrl = 
-        $.ajax({ url: moveUrl }).then(
-            (data) => {
-                moveDetails.power = data.power
-                moveDetails.type = data.type.name
-                moveDetails.name = data.name
-            },
-            (error) => {
-                console.log('bad request: ',error);
-            }
-        )
-}
+const initMove = function(Pokemon) {
+
+        let randomIdx = Math.floor(Math.random() * Pokemon.move.length)
+        let moveUrl = Pokemon.move[randomIdx]['move']['url']
+        const moveDetails = {
+            power: null,
+            type: null,
+            name: null,
+        }
+        
+            $.ajax({ url: moveUrl }).then(
+                (data) => {
+                    moveDetails.power = data.power
+                    moveDetails.type = data.type.name
+                    moveDetails.name = data.name
+
+                    if (moveDetails.power !== null) {
+                        Pokemon.move = moveDetails
+                        return 
+                    } else {
+                        initMove(Pokemon)                        
+
+                    }
+                },
+                (error) => {
+                    console.log('bad request: ',error);
+                }
+            )
+    }
 
 
 /* Main Script */
@@ -207,6 +249,10 @@ $.when.apply($, getTypeMatchById).done(function() { // after the type matchup ta
 
     $.when.apply($, getPokemonById).done(function() { // after Pokemon initialization
 
+        for (let i = 0; i < newPokemonList.length; i++) {
+            initMove(newPokemonList[i])
+        }
+        
         initPlayers() // initialize Players
 
     })
