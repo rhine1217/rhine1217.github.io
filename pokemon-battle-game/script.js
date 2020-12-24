@@ -196,17 +196,7 @@ const initPokemon = function () {
     }
 }
 
-// Initialize Players 
-
-const initPlayers = function() {
-    
-    players = [new Player(gameSettings.playerNames[0]), new Player(gameSettings.playerNames[1])]
-    players[0].pokemon = newPokemonList.slice(0,3)
-    players[1].pokemon = newPokemonList.slice(3,6)
-        
-}
-
-// Initialize a random move for each Pokemon (used in initPokemon function)
+// Initialize a random move for each Pokemon
 
 const initMove = function(Pokemon) {
 
@@ -238,6 +228,15 @@ const initMove = function(Pokemon) {
             )
     }
 
+// Initialize Players 
+
+const initPlayers = function() {
+    
+    players = [new Player(gameSettings.playerNames[0]), new Player(gameSettings.playerNames[1])]
+    players[0].pokemon = newPokemonList.slice(0,3)
+    players[1].pokemon = newPokemonList.slice(3,6)
+        
+}
 
 /* Main Script */
 
@@ -254,6 +253,7 @@ $.when.apply($, getTypeMatchById).done(function() { // after the type matchup ta
         }
         
         initPlayers() // initialize Players
+        console.log(players, newPokemonList)
 
     })
     
