@@ -5,7 +5,7 @@ const gameSettings = {
     playerNum: 2, // default 2 players 
     pokeDex: 151, // default 1st gen Pokemons only
     pokeNum: 3, // each player gets 3 Pokemons
-    playerNames: ['rhine', 'chris'], // default names - to update later
+    playerNames: ['rhine', 'computer'], // default names - to update later
     typeMatchUp: {}, // table matrix to determine attack effectiveness
 }
 
@@ -47,10 +47,10 @@ class Pokemon {
     dealDamage(target) { // target is a Pokemon
 
         const coE = {
-            overall: 0.1,
+            overall: 0.25,
             constant: 1,
             sameTypeBonus: 1.25,
-            randomLower: 15,
+            randomLower: 60,
             randomUpper: 100,
         }
         
@@ -69,7 +69,7 @@ class Pokemon {
         p = this.move.power
         a = this.attack
         d = target.defense
-        random = Math.floor ( Math.random() * coE.randomLower + (coE.randomUpper - coE.randomLower) ) / 100
+        random = Math.floor ( Math.random() * (coE.randomUpper - coE.randomLower) + coE.randomLower) / 100
 
         for (let i = 0; i < this.types.length; i++) {
             stab *= (this.move.type === this.types[i]) ? coE.sameTypeBonus : 1;
@@ -91,6 +91,7 @@ class Pokemon {
 
     takeDamage(damageNum) {
         this.hp = (damageNum >= this.hp)? 0 : this.hp - damageNum 
+        console.log(`${this.name} has hp of ${this.hp}`)
     }
 
     isAlive() {
@@ -208,6 +209,7 @@ const initMove = function(Pokemon) {
             name: null,
         }
         
+        getMoveByUrl.push( 
             $.ajax({ url: moveUrl }).then(
                 (data) => {
                     moveDetails.power = data.power
@@ -215,18 +217,19 @@ const initMove = function(Pokemon) {
                     moveDetails.name = data.name
 
                     if (moveDetails.power !== null) {
-                        Pokemon.move = moveDetails
-                        return 
+                        Pokemon.move = moveDetails 
                     } else {
                         initMove(Pokemon)                        
-
                     }
                 },
                 (error) => {
                     console.log('bad request: ',error);
                 }
             )
+        
+        )
     }
+    
 
 // Initialize Players 
 
@@ -242,6 +245,25 @@ const initPlayers = function() {
 
 initTypeMatch() // fill the gameSettings with type matchup table
 
+const battleState = {
+    pairs: [],
+    winner: null,
+}
+
+const attackRound = function (a, d) {
+    
+    if (battleState.winner) {
+        console.log(`someone won and it's ${battleState.winner.name}`)
+    } else {
+        damage = a.dealDamage(d)
+        d.takeDamage(damage)
+        if (d.hp === 0) {
+            battleState.winner = a
+        }
+    }
+}
+
+
 $.when.apply($, getTypeMatchById).done(function() { // after the type matchup table is filled
     
     initPokemon() // initalize Pokemons (with all details including move assignment)
@@ -251,9 +273,22 @@ $.when.apply($, getTypeMatchById).done(function() { // after the type matchup ta
         for (let i = 0; i < newPokemonList.length; i++) {
             initMove(newPokemonList[i])
         }
-        
-        initPlayers() // initialize Players
-        console.log(players, newPokemonList)
+
+        $.when.apply($, getMoveByUrl).done(function() {
+
+            initPlayers() // initialize Players
+
+            // assign battle pokemon pair
+    
+            battleState.pairs = [players[0].pokemon[0], players[1].pokemon[0]]
+
+            $('.btn').on('click', (event) => {
+                attackRound(battleState.pairs[0], battleState.pairs[1])
+                attackRound(battleState.pairs[1], battleState.pairs[0])
+            })
+
+
+        })
 
     })
     

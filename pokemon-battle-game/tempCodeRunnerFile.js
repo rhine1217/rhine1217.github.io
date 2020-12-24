@@ -1,3 +1,16 @@
 
-        random = Math.floor ( Math.random() * 15 + 85 ) / 100
-        console.log(random)
+let i = 0
+let str = 'abc'
+
+const testFunc = function() {
+
+    if (i === 5) {
+        clearInterval(test)
+    } else {
+        console.log(`${str}`)
+        i++
+    }
+}
+
+
+const test = setInterval (testFunc, 1000)
