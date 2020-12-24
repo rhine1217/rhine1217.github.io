@@ -1,0 +1,40 @@
+* {
+    font-family: 'Lato', sans-serif;
+}
+
+body, html {
+    height: 100%;
+}
+
+.bg {
+    background-image: url('images/1920x1080-pikachu-bg.png');
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.8;
+}
+
+#logo {
+    height: 25%;
+    padding-top: 1rem!important;
+    padding-left: 2rem!important;
+}
+
+h1 {
+    letter-spacing: 0.03em;
+    opacity: 0.9;
+}
+
+.title {
+    padding-top: 3rem! important;
+    padding-left: 4rem! important;
+}
+
+.btn {
+    border-radius: 0rem;
+}
+
+.mybtn {
+    width: 100%;
+}
