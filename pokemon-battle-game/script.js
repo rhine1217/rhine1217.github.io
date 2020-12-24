@@ -85,16 +85,13 @@ const getAllTypes = function (pokeDetails) {
     return types
 }
 
-const getRandomMove = function(pokeDetails) {
-
-}
 
 class Pokemon {
     constructor(id, pokeDetails) {
         this.id = id,
         this.name = pokeDetails.name,
         this.types = getAllTypes(pokeDetails), // can have 1 or 2 types 
-        this.move = pokeDetails.moves[0]['move'], // choose a random move - this needs to be a Move object 
+        this.move = pokeDetails.move, // assign a random move
         this.hp = pokeDetails.stats[0]['base_stat'],
         this.attack = pokeDetails.stats[1]['base_stat'],
         this.defense = pokeDetails.stats[2]['base_stat'],
@@ -136,18 +133,17 @@ class Player {
 
 
 let getPokemonById = []; // list of all the API Calls
+let getMoveByUrl;
 let newPokemonList = [];
 let players = [];
 
 const initPokemon = function () {
 
-    let randomID, pokeID;
-    
     for (let i = 0; i < gameSettings.pokeNum * gameSettings.playerNum; i++) {
 
     // randomly generate an ID 
 
-        randomID = Math.floor(Math.random() * gameSettings.pokeDex) + 1 
+        const randomID = Math.floor(Math.random() * gameSettings.pokeDex) + 1 
 
         getPokemonById.push( 
         
@@ -157,18 +153,34 @@ const initPokemon = function () {
             }).then(
                 (data) => {
                     
-                    pokeID = data.id;
-                    pokeDetails = {
+                    const pokeID = data.id;
+                    const pokeDetails = {
                         name: data.name,
                         types: data.types,
-                        moves: data.moves,
+                        move: null,
                         stats: data.stats,
                         pics: data.sprites,
                     }
 
-                    // console.log(pokeDetails)
+                    let moveUrl = data.moves[Math.floor(Math.random() * data.moves.length) + 1].move.url
 
-                    newPokemonList.push(new Pokemon(pokeID, pokeDetails))
+                    const moveDetails = {
+                        power: null,
+                        type: null,
+                        name: null,
+                    };
+
+                    initMove(moveUrl, moveDetails)
+
+                    $.when(getMoveByUrl).done(function() {
+
+                        pokeDetails.move = moveDetails 
+                        console.log(pokeDetails) // tester
+                        newPokemonList.push(new Pokemon(pokeID, pokeDetails))
+
+                    })
+
+                    // console.log(pokeDetails)
 
                 },
 
@@ -192,3 +204,20 @@ const initPlayers = function() {
 
 
 
+const initMove = function(moveUrl, moveDetails) {
+
+    getMoveByUrl = 
+    
+        $.ajax({ url: moveUrl }).then(
+        
+            (data) => {
+                moveDetails.power = data.power
+                moveDetails.type = data.type.name
+                moveDetails.name = data.name
+            },
+
+            (error) => {
+                console.log('bad request: ',error);
+            }
+        )
+}
