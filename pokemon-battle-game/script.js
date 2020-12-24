@@ -172,28 +172,19 @@ const initPokemon = function () {
 
                     initMove(moveUrl, moveDetails)
 
-                    $.when(getMoveByUrl).done(function() {
-
+                    const getNewMove = function() {
                         if (moveDetails.power !== null) {
                             pokeDetails.move = moveDetails 
-                            console.log(pokeDetails) // tester
+                            // console.log(pokeDetails) // tester
                             newPokemonList.push(new Pokemon(pokeID, pokeDetails))
                         } else {
                             moveUrl = data.moves[Math.floor(Math.random() * data.moves.length) + 1].move.url
                             initMove(moveUrl, moveDetails)
-                            $.when(getMoveByUrl).done(function() {
-                                if (moveDetails.power !== null) {
-                                    pokeDetails.move = moveDetails
-                                    console.log(pokeDetails)
-                                    newPokemonList.push(new Pokemon(pokeID, pokeDetails))
-                                } else {
-                                    console.log('still power is null')
-                                }
-                            })
+                            $.when(getMoveByUrl).done(getNewMove)
                         }
+                    }
 
-                    })
-
+                    $.when(getMoveByUrl).done(getNewMove);
                 },
 
                 (error) => {
