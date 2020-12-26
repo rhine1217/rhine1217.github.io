@@ -29,17 +29,17 @@
                 </div>
                 <div class="row">
                     <div class="col-3 offset-2">
-                        <button class="btn btn-outline-primary mybtn mt-3">START</button>
+                        <button class="btn btn-outline-primary mybtn mt-3" id="start">START</button>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-3 offset-2">
-                        <button class="btn btn-outline-dark mybtn mt-3">HOW TO PLAY</button>
+                        <button class="btn btn-outline-dark mybtn mt-3" id="howtoplay">HOW TO PLAY</button>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-3 offset-2">
-                        <button class="btn btn-outline-dark mybtn mt-3">CREDITS</button>
+                        <button class="btn btn-outline-dark mybtn mt-3" id="credits">CREDITS</button>
                     </div>
                 </div>
             </div>
@@ -57,6 +57,12 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
         
         <!-- Custom JavaScript -->
-        <script src="script.js" async defer></script>
+        <script tpye="text/javascript">
+            document.getElementById('start').onclick = function() {
+                location.href = 'battle.html'
+            }
+
+        </script>
+        <!-- <script src="script.js" async defer></script> -->
     </body>
 </html>

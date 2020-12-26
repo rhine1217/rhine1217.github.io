@@ -1,0 +1,112 @@
+/* Color Pickers
+*/ 
+
+:root {
+    --bgGreen: #5ef0ab;
+    --bgGrey: #31393a;
+    --flying: #99b2e3;
+    --fairy:#ee92e6;
+    --rock:#c9bab8;
+    --grass:#5ebd58;
+    --ice:#7bd3c7;
+    --dark: #5d5c69; 
+    --normal:#9b9fa1;
+    --poison:#a360bf;
+    --water:#5ca8e1; 
+    --bug: #a0bf30;
+    --ghost:#616ebe;
+    --dragon:#0a6dc8;
+    --fire:#f2994b;
+    --electric: #f1d84a;
+    --fighting: #d9435f;
+    --psychic: #f97d7b;
+    --steel: #548fa1;
+    --ground:#d98150;
+}
+
+* {
+    font-family: 'Lato'; sans-serif;
+}
+
+body; html {
+    height: 100%;
+}
+
+.bg {
+    background-image: url('images/ui_bg_green_03.png');
+    height: 120%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.8;
+}
+
+.my-container{
+    margin-left: 1rem;
+    margin-right: 1rem;
+    padding-top: 1rem;
+}
+
+.card-title {
+    font-weight: bold;
+}
+
+.btn {
+    border-radius: 0rem;
+    width: 100%;
+}
+
+.btn-outline-primary {
+    border-color: var(--bgGreen);
+    color: var(--bgGreen);
+}
+
+.btn-outline-primary:hover, 
+.btn-outline-primary:focus, 
+.btn-outline-primary:active {
+    color: var(--bgGrey);
+    background-color: var(--bgGreen);
+    border-color: var(--bgGreen);
+}
+.pokemon-img {
+    height: 50%;
+}
+.my-img {
+    height: 75%;
+    width: auto;
+}
+
+
+.card {
+    margin-bottom: 1rem;
+    border-radius: 0rem;
+    box-shadow: 0px 0px 2px 2px rgba(94, 240, 171, 0.2);
+}
+
+.badge-type {
+    background-color: var(--dark);
+}
+
+.text-second-level {
+    font-size: 0.8rem;
+}
+
+hr {
+    margin-top: 0.6rem;
+    margin-bottom: 0.5rem;
+}
+
+.progress {
+    margin-bottom: 0.5rem;
+}
+
+.types-row,
+.panel-row {
+    --bs-gutter-x: 0.5rem;
+}
+
+.progress-bar {
+    background-color: var(--bgGreen);
+    color: var(--bgGrey);
+    font-size: 0.7rem;
+}
