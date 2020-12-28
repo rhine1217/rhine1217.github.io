@@ -28,13 +28,17 @@
     font-family: 'Lato', sans-serif;
 }
 
-.bg {
+body, html {
+    height: 100%;
+}
+
+#battle-page {
     position: relative;
 }
-.bg::before {
+#battle-page::before {
     content: "";
     background-image: url('images/ui_bg_green_03.png');
-    height: 120%;
+    height: 150%;
     position: absolute;
     top: 0px;
     bottom: 0px;
@@ -51,6 +55,45 @@
     margin-right: 1rem;
     padding-top: 1rem;
     position: relative;
+}
+
+
+#index-page {
+    background-image: url('images/1920x1080-pikachu-bg.png');
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.8;
+}
+
+#logo {
+    height: 25%;
+    padding-top: 1rem!important;
+    padding-left: 2rem!important;
+}
+
+h1 {
+    letter-spacing: 0.03em;
+    opacity: 0.9;
+}
+
+.form-control {
+    border-radius: 0rem;
+    border-color:rgba(0,123,255);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    background-color: rgba(255,255,255,0.8)
+}
+
+::placeholder {
+    text-align: center;
+}
+
+.title {
+    padding-top: 3rem! important;
+    padding-left: 4rem! important;
 }
 
 .types-row,
@@ -72,9 +115,16 @@
     box-shadow: 0px 0px 1px 2px rgba(220,53,69,1);
 }
 
-.player-title {
+.battle-card {
+    box-shadow: 0px 0px 1px 2px rgba(49,57,58,1);
+}
+
+.player-card.small-card {
+    cursor: pointer;
+}
+
+.player-title, .opponent-title, .battle-title {
     background-color: transparent;
-    color: rgba(0, 123, 255);
     padding: 1rem;
     letter-spacing: 0.1rem;
     font-size: 1.5rem;
@@ -82,14 +132,16 @@
     text-transform: uppercase;
 }
 
+.player-title {
+    color: rgba(0, 123, 255);
+}
+
 .opponent-title {
-    background-color: transparent;
     color: rgba(220,53,69);
-    padding: 1rem;
-    letter-spacing: 0.1rem;
-    font-size: 1.5rem;
-    text-align: center;
-    text-transform: uppercase;
+}
+
+.battle-title {
+    color: rgba(49,57,58,1)
 }
 
 .pokemon-img {
@@ -214,4 +266,17 @@ hr {
 
 .fainted {
     opacity: 0.5;
+}
+
+#battle-messages {
+    height: 27.75rem;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    background-color: white;
+    padding: 1rem;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
 }

@@ -1,11 +1,13 @@
 
 /* Game Configurations */
 
+let myVar = 'abc'
+
 const gameSettings = {
     playerNum: 2, // default 2 players 
     pokeDex: 151, // default 1st gen Pokemons only
     pokeNum: 3, // each player gets 3 Pokemons
-    playerNames: ['Rhine', 'Computer'], // default names - to update later
+    playerNames: ['NOTHING', 'Computer'], // default names - to update later
     typeMatchUp: {}, // table matrix to determine attack effectiveness
 }
 
@@ -184,7 +186,13 @@ const imageLookup = [
     '151 - 4vTIa6H.png',
 ]
 
-/* Classes: Pokemon, Player */
+// const gameState = {
+//     pairs: null,
+//     winner: null,
+//     gameWinner: null,
+// }
+
+/* Classes: Pokemon */
 
 class Pokemon {
     constructor(id, pokeDetails) {
@@ -252,15 +260,6 @@ class Pokemon {
 
 }
 
-class Player {
-    constructor(name) {
-        this.name = name,
-        this.pokemon = [],
-        this.status = 'active'
-    }
-}
-
-
 /* Misc Helper Functions */
 
 const getAllTypes = function (pokeDetails) {
@@ -271,22 +270,30 @@ const getAllTypes = function (pokeDetails) {
     return types
 }
 
-const upperFirstLetter = function (str) {
-    return str.charAt(0).toUpperCase() + str.slice(1)
-}
-
-// const leadingZero = function(num) {
-//     return ('00'+num).slice(-3)
-// }
-
 /* Define helper variables for initializing Pokemons and Players */
 
-let getTypeMatchById = []; // list of all the API Calls to get the type match up table 
-let getPokemonById = []; // list of all the API Calls to get Pokemon details (* 6 times)
-let getMoveByUrl = []; // API call to get Move details (1 per Pokemon)
-let newPokemonList = []; // store all the generated Pokemons
-let players = []; // store the Players
+let getTypeMatchById = []
+let getPokemonById, getMoveByUrl, newPokemonList;
+let gameState;
 
+// let getTypeMatchById = []; // list of all the API Calls to get the type match up table 
+// let getPokemonById = []; // list of all the API Calls to get Pokemon details (* 6 times)
+// let getMoveByUrl = []; // API call to get Move details (1 per Pokemon)
+// let newPokemonList = []; // store all the generated Pokemons
+
+const initConfigs = function() {
+
+    getPokemonById = []
+    getMoveByUrl = []
+    newPokemonList = []
+
+    gameState = {
+        pairs: null,
+        winner: null,
+        gameWinner: null,
+    }
+
+}
 /* Main Functions for Initializing */
 
 // Initialize Type Matchup Table (in gameSettings)
@@ -325,7 +332,16 @@ const initPokemon = function () {
 
     for (let i = 0; i < gameSettings.pokeNum * gameSettings.playerNum; i++) {
 
-        const randomID = Math.floor(Math.random() * gameSettings.pokeDex) + 1 // randomly generate an ID 
+        let randomID;
+
+        const getRandomId = function() {
+            randomID = Math.floor(Math.random() * gameSettings.pokeDex) + 1 // randomly generate an ID 
+            if (randomID === 132) {
+                getRandomId()
+            }
+        }
+
+        getRandomId()
 
         getPokemonById.push( 
             $.ajax({
@@ -388,15 +404,6 @@ const initMove = function(Pokemon) {
     }
     
 
-// Initialize Players 
-
-const initPlayers = function() {
-    
-    players = [new Player(gameSettings.playerNames[0]), new Player(gameSettings.playerNames[1])]
-    players[0].pokemon = newPokemonList.slice(0,3)
-    players[1].pokemon = newPokemonList.slice(3,6)
-        
-}
 
 /* Main Functions for Rendering */
 
@@ -408,35 +415,70 @@ const renderPlayers = function() {
 const renderLgPokemons = function() {
 
     let targetList = ['player', 'opponent']
+    let target, pokemon, pokeId, targetCard, btn
 
-    for (let n = 0; n < 2; n++) {
+    for (let i = 0; i < 6; i++) {
 
-        let target = targetList[n]
-
-        for (let i = 0; i < 3; i++) {
-            let pokemon = players[n].pokemon[i]
-            let pokeId = pokemon.id
-            let targetCard = $(`#${target}-${i}-lg`)
-            targetCard.find('img').attr('src',`images/${imageLookup[pokeId-1]}`)
-            targetCard.find('.card-title').text(pokemon.name)
-            targetCard.find('.progress-text').text(`${pokemon.currHP} / ${pokemon.hp} HP`)
-            targetCard.find('.types-row').empty()
-            if (pokemon.types.length === 1) {
-                targetCard.find('.types-row').addClass('d-flex justify-content-center')
-                targetCard.find('.types-row').append(
-                    `<div class="col-4">
-                        <div style="background-color: var(--${pokemon.types[0]})" class="badge badge-pill">${pokemon.types[0]}</div></div>`)
-            } else if (pokemon.types.length === 2) {
-                targetCard.find('.types-row').removeClass('d-flex justify-content-center')
-                targetCard.find('.types-row').append(
-                    `<div class="col-4 offset-2">
-                        <div style="background-color: var(--${pokemon.types[0]})" class="badge badge-pill">${pokemon.types[0]}</div></div>
-                    <div class="col-4">
-                        <div style="background-color: var(--${pokemon.types[1]})" class="badge badge-pill">${pokemon.types[1]}</div></div>`)
+        
+        if (i < 3) {
+            target = targetList[0]
+            cardIdx = i
+            btn = {
+                class: 'btn-outline-primary',
+                text: 'ATTACK!'
+            }
+            
+        } else {
+            target = targetList[1]
+            cardIdx = i - 3
+            btn = {
+                class: 'btn-danger',
+                text: 'ATTACKING'
             }
         }
+        
+        targetCard = $(`#${target}-${cardIdx}-lg`)
+        pokemon = newPokemonList[i]
+        pokeId = pokemon.id
+
+        targetCard.removeClass('fainted')
+        
+        targetCard.find('img').attr('src',`images/${imageLookup[pokeId-1]}`)
+
+        targetCard.find('.card-title').text(pokemon.name)
+
+        targetCard.find('.progress-text').text(`${pokemon.currHP} / ${pokemon.hp} HP`)
+        targetCard.find('.progress-bar').css('width', '100%')
+        targetCard.find('.progress-bar').attr('aria-valuenow', '100')
+
+        targetCard.find('.types-row').empty()
+        if (pokemon.types.length === 1) {
+            targetCard.find('.types-row').addClass('d-flex justify-content-center')
+            targetCard.find('.types-row').append(
+                `<div class="col-4">
+                    <div style="background-color: var(--${pokemon.types[0]})" class="badge badge-pill">${pokemon.types[0]}</div></div>`)
+        } else if (pokemon.types.length === 2) {
+            targetCard.find('.types-row').removeClass('d-flex justify-content-center')
+            targetCard.find('.types-row').append(
+                `<div class="col-4 offset-2">
+                    <div style="background-color: var(--${pokemon.types[0]})" class="badge badge-pill">${pokemon.types[0]}</div></div>
+                <div class="col-4">
+                    <div style="background-color: var(--${pokemon.types[1]})" class="badge badge-pill">${pokemon.types[1]}</div></div>`)
+        }
+
+        targetCard.find('.btn').removeClass('btn-secondary')
+        targetCard.find('.btn').addClass(`${btn.class}`)
+        targetCard.find('.btn').text(`${btn.text}`)
+
+        if (cardIdx === 0) {
+            targetCard.removeClass('d-none')
+        } else {
+            targetCard.addClass('d-none')
+        }
+
     }
 }
+
 
 const renderPokemonMoves = function() {
 
@@ -462,6 +504,14 @@ const renderSmPokemons = function() {
         let pokemon = newPokemonList[pokeIdx[i]]
             $('.small-card').eq(i).find('img').attr('src', `images/${imageLookup[pokemon.id-1]}`)
             $('.small-card').eq(i).find('.card-title-small').text(pokemon.name)
+            $('.small-card').eq(i).find('.progress-bar').css('width', '100%')
+            $('.small-card').eq(i).find('.progress-bar').attr('aria-valuenow', '100')
+            $('.small-card').eq(i).removeClass('fainted')
+            if (i <= 1) {
+                $('.small-card').eq(i).attr('id', `player-${pokeIdx[i]}-sm`)    
+            } else if (i >= 2) {
+                $('.small-card').eq(i).attr('id', `opponent-${pokeIdx[i]-3}-sm`)
+            }
     }
 }
 
@@ -490,13 +540,17 @@ const swapPokemons = function(targetCardSm) { //input is a jQuery object
     cardSm = targetCardSm.closest('.small-card') 
     cardLg = cardSm.parent().children('.card').not('.small-card').not('.d-none')
 
+    cardSmId = cardSm.attr('id')
+    oldCardLgId = cardLg.attr('id')
+    newCardLgId = cardSmId.slice(0,cardSmId.length-2) + 'lg'
+
     // Update the small card contents
 
     newValues = {
         imgSrc: cardLg.find('img').attr('src'),
         title: cardLg.find('.card-title').text(),
         barWidth: cardLg.find('.progress-bar').attr('aria-valuenow') + '%',
-        id: cardLg.attr('id'),
+        id: oldCardLgId.slice(0, oldCardLgId.length-2) + 'sm',
         fainted: cardLg.hasClass('fainted')
     }
 
@@ -513,14 +567,13 @@ const swapPokemons = function(targetCardSm) { //input is a jQuery object
     // Update the large card display to d-none
 
     cardLg.addClass('d-none')
-
-    cardSmId = cardSm.attr('id')
-    cardLgId = cardSmId.slice(0,cardSmId.length-2) + 'lg'
-    $(`#${cardLgId}`).removeClass('d-none')
+    $(`#${newCardLgId}`).removeClass('d-none')
 
     cardSm.attr('id', newValues.id)
 
 }
+
+/* Main Functions for Battle Rounds */
 
 const returnBattlePairs = function() {
 
@@ -536,15 +589,6 @@ const returnBattlePairs = function() {
 
     return pairs // idx of newPokemonList
 }
-/* Main Script */
-
-initTypeMatch() // fill the gameSettings with type matchup table
-
-const gameState = {
-    pairs: null,
-    winner: null,
-    gameWinner: null,
-}
 
 const attackRound = function (a, d) {
     attackPokemon = newPokemonList[a]
@@ -555,14 +599,9 @@ const attackRound = function (a, d) {
         damage = attackPokemon.dealDamage(defensePokemon)
         defensePokemon.takeDamage(damage)
         renderHP(d)
-        console.log('attack is ' + a + 'defense is ' + d)
         renderAttkMsg(a,d,damage)
 
         if (defensePokemon.isFainted()) {
-
-            // render the next round or clear button 
-
-            // next round on click, 
 
             gameState.winner = attackPokemon
             renderWinMsg(a)
@@ -578,7 +617,7 @@ const attackRound = function (a, d) {
 }
 
 const renderAttkMsg = function(a, d, dmg) {
-    console.log('attack is ' + a + 'defense is ' + d)
+
     attackPokemon = newPokemonList[a]
     defensePokemon = newPokemonList[d]
     msgClasses = {};
@@ -629,6 +668,7 @@ const renderWinMsg = function(a) {
     )
 
 }
+
 const renderFainted = function(pokeIdx) { //input = a or d, which is the pokeidx 
     
     if (pokeIdx >= 3) {
@@ -685,6 +725,12 @@ const ckGameWinner = function() {
     }
 }
 
+const disableEvtListeners = function() {
+    $('.player-card.btn').off('click')
+    $('.player-card.small-card').off('click')
+    $('#start').off('click')
+}
+
 const renderGameOver = function() {
 
     msgClasses = {
@@ -708,49 +754,103 @@ const renderGameOver = function() {
 
     $('#battle-messages').append(`
         <div class="row">
-            <div class="col-4 offset-4">
+            <div class="col-4 offset-2">
                 <button class="btn btn-outline-success">NEW GAME</button>
+            </div>
+            <div class="col-4">
+                <button class="btn btn-outline-secondary">QUIT GAME</button>
             </div>
         </div>`
     )
 
     $('#battle-messages').find('.btn').on('click', event => {
         event.preventDefault()
-        location.reload()
+        $('#battle-messages').empty()
+        disableEvtListeners()
+        if ($(event.target).hasClass('btn-outline-secondary')) {
+            $('#index-page').removeClass('d-none')
+            $('#battle-page').addClass('d-none')
+            addStartListener()
+        } else {
+            initGame()
+            addSwapEvtListener()
+        }
     })
 
 }
-$.when.apply($, getTypeMatchById).done(function() { // after the type matchup table is filled
+
+/* Main Script */
+
+const initGame = function() {
+
+    initConfigs()
     
-    initPokemon() // initalize Pokemons (with all details including move assignment)
+    $.when.apply($, getTypeMatchById).done(function() { // after the type matchup table is filled
+        
+        initPokemon() // initalize Pokemons (with all details including move assignment)
+    
+        $.when.apply($, getPokemonById).done(function() { // after Pokemon initialization
+    
+            for (let i = 0; i < newPokemonList.length; i++) {
+                initMove(newPokemonList[i])
+            }
+    
+            $.when.apply($, getMoveByUrl).done(function() {
 
-    $.when.apply($, getPokemonById).done(function() { // after Pokemon initialization
-
-        for (let i = 0; i < newPokemonList.length; i++) {
-            initMove(newPokemonList[i])
-        }
-
-        $.when.apply($, getMoveByUrl).done(function() {
-
-            initPlayers() // initialize Players
-            renderPlayers()
-            renderLgPokemons()
-            renderSmPokemons()
-
-            $('.btn-outline-primary').on('click', (event) => {
-                event.preventDefault()
-                gameState.pairs = returnBattlePairs()
-                attackRound(gameState.pairs[0], gameState.pairs[1])
-                attackRound(gameState.pairs[1], gameState.pairs[0])
+                $('#index-page').addClass('d-none')
+                $('#battle-page').removeClass('d-none')
+    
+                renderPlayers()
+                renderLgPokemons()
+                renderSmPokemons()
+    
             })
-
-            $('.small-card.player-card').on('click', (event) => {
-                event.preventDefault()
-                swapPokemons($(event.target))
-            })
-
+    
         })
-
+        
     })
+}
+
+const addAttkEvtListener = function() {
+                    
+    $('button.btn').on('click', (event) => {
+        event.preventDefault()
+        if ($(event.target).hasClass('btn-outline-primary')) {
+            gameState.pairs = returnBattlePairs()
+            attackRound(gameState.pairs[0], gameState.pairs[1])
+            attackRound(gameState.pairs[1], gameState.pairs[0])
+        }
+    })
+
+}
+
+const addSwapEvtListener = function() {
+
+    $('.small-card.player-card').on('click', (event) => {
+        event.preventDefault()
+        swapPokemons($(event.target))
+    })
+}
+
+const addStartListener = function() {
+
+    $('#start').on('click', event => {
     
-})
+        event.preventDefault()
+    
+        if ($('input').val() !== '') {
+            gameSettings.playerNames[0] = $('input').val()
+        } else {
+            gameSettings.playerNames[0] = 'rhine'
+        }
+    
+        initTypeMatch() // fill the gameSettings with type matchup table
+        initGame()
+        addSwapEvtListener()
+    
+    })
+}
+
+addStartListener()
+addAttkEvtListener()
+

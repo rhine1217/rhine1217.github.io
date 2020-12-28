@@ -17,8 +17,38 @@
         <link href="styles-battle.css" rel="stylesheet">
     </head>
     <body>
-
-        <div class="bg">
+        <div class="" id="index-page">
+            <img src="images/Pokemon-Logo-700x394.png" id="logo" alt="logo">
+            
+            <div class="title">
+                <div class="row">
+                    <div class="col-7 text-center mb-3">
+                        <h1>POKEMON BATTLETIME</h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3 offset-2">
+                        <input type="text" class="form-control" placeholder="Enter Your Name">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3 offset-2">
+                        <button class="btn btn-outline-primary mt-3" id="start">START</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3 offset-2">
+                        <button class="btn btn-outline-dark mt-3" id="howtoplay">HOW TO PLAY</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3 offset-2">
+                        <button class="btn btn-outline-dark mt-3" id="credits">CREDITS</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="d-none" id="battle-page">
         <div class="my-container">
             <div class="row panel-row">
                 <div class="col-3 d-flex justify-content-center flex-wrap">
@@ -120,9 +150,11 @@
                 </div>
                 <div class="col-6 battleground">
                     <div class="row">
-                        <div class="col-12" style="height: 4rem"></div>
+                        <div class="col-12">
+                            <div class="battle-title">BATTLEGROUND</div>
+                        </div>
                     </div>
-                    <div id="battle-messages">
+                    <div id="battle-messages" class="battle-card">
                     </div>
                 </div>
                 <div class="col-3 d-flex justify-content-center flex-wrap">
