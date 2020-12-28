@@ -54,7 +54,8 @@
 }
 
 .types-row,
-.panel-row {
+.panel-row,
+.move-row {
     --bs-gutter-x: 0.5rem;
 }
 
@@ -78,6 +79,7 @@
     letter-spacing: 0.1rem;
     font-size: 1.5rem;
     text-align: center;
+    text-transform: uppercase;
 }
 
 .opponent-title {
@@ -87,14 +89,19 @@
     letter-spacing: 0.1rem;
     font-size: 1.5rem;
     text-align: center;
+    text-transform: uppercase;
 }
 
 .pokemon-img {
-    height: 50%;
+    height: 6rem;
 }
 .my-img {
     height: 75%;
     width: auto;
+}
+
+.card-title, .types-row, .move-row, .card-title-small, .attkMsg {
+    text-transform: capitalize;
 }
 
 .btn {
@@ -103,12 +110,23 @@
     letter-spacing: 0.1rem;
 }
 
-.badge-type {
-    background-color: var(--dark);
+.btn-danger:hover {
+    background-color: rgba(220,53,69);
+    cursor: default;
+}
+
+.btn-secondary:hover {
+    background-color: #6c757d;
+    cursor: default;
+    border-color: #6c757d;
 }
 
 .text-second-level {
     font-size: 0.8rem;
+}
+
+.badge {
+    width: 100%;
 }
 
 hr {
@@ -117,12 +135,14 @@ hr {
 }
 
 .progress {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.2rem;
+    height: 0.7rem;
 }
 
-.progress-bar {
-    color: white;
+.progress-text {
     font-size: 0.7rem;
+    text-align: center;
+    margin-bottom: 0.2rem;
 }
 
 .bar-player {
@@ -142,7 +162,7 @@ hr {
 }
 
 .my-img-small {
-    max-height: 65%;
+    height: 65%;
     width: auto;
     object-fit: contain;
 }
@@ -169,4 +189,29 @@ hr {
 
 .alert-danger {
     color: #dc3455
+}
+
+.player-message {
+    display: flex;
+    justify-content: start;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.opponent-message {
+    display: flex;
+    justify-content: flex-end;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.win-message {
+    display:flex;
+    justify-content: center;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.fainted {
+    opacity: 0.5;
 }
