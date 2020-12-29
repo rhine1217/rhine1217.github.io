@@ -268,10 +268,19 @@ const scrollAuto = function () {
 
 let getTypeMatchById = []; // list of all the API Calls to get the type match up table 
 let getPokemonById, getMoveByUrl, newPokemonList;
-let gameState;
+let gameState, gameCount;
 
 /* Main Functions for Initializing */
 
+const initCount = function() {
+    gameCount = {
+        player: [0,0], // [win, loss]
+        opponent: [0,0], // [win, loss]
+    }
+
+    renderGameCount();
+    
+}
 const initConfigs = function() {
 
     getPokemonById = []; // list of all the API Calls to get Pokemon details (* 6 times)
@@ -726,8 +735,12 @@ const renderNextRound = function() {
 const ckGameWinner = function() {
     if ($('.player-card.fainted').length === 5) {
         gameState.gameWinner = 'opponent'
+        gameCount.opponent[0] += 1 // opponent win + 1
+        gameCount.player[1] += 1 // player loss + 1
     } else if ($('.opponent-card.fainted').length === 5) {
         gameState.gameWinner = 'player'
+        gameCount.player[0] += 1
+        gameCount.opponent[1] += 1
     }
 }
 
@@ -753,6 +766,17 @@ const renderGameOver = function() {
     )
 
     scrollAuto()
+
+    renderGameCount()
+}
+
+const renderGameCount = function() {
+
+    $('.win-ct').eq(0).text(gameCount.player[0])
+    $('.win-ct').eq(1).text(gameCount.opponent[0])
+    $('.loss-ct').eq(0).text(gameCount.player[1])
+    $('.loss-ct').eq(1).text(gameCount.opponent[1])
+
 }
 
 const renderNewOrQuitGame = function() {
@@ -857,6 +881,7 @@ const addStartListener = function() {
         }
         
         initTypeMatch() // fill the gameSettings with type matchup table
+        initCount()
         initGame()
         addSwapEvtListener()
         addNewOrQuitListener()

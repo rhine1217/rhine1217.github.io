@@ -1,3 +1,29 @@
+/* Color Pickers
+*/ 
+
+:root {
+    --bgGreen: #5ef0ab;
+    --bgGrey: #31393a;
+    --flying: #99b2e3;
+    --fairy:#ee92e6;
+    --rock:#c9bab8;
+    --grass:#5ebd58;
+    --ice:#7bd3c7;
+    --dark: #5d5c69; 
+    --normal:#9b9fa1;
+    --poison:#a360bf;
+    --water:#5ca8e1; 
+    --bug: #a0bf30;
+    --ghost:#616ebe;
+    --dragon:#0a6dc8;
+    --fire:#f2994b;
+    --electric: #f1d84a;
+    --fighting: #d9435f;
+    --psychic: #f97d7b;
+    --steel: #548fa1;
+    --ground:#d98150;
+}
+
 * {
     font-family: 'Lato', sans-serif;
 }
@@ -6,7 +32,33 @@ body, html {
     height: 100%;
 }
 
-.bg {
+#battle-page {
+    position: relative;
+}
+#battle-page::before {
+    content: "";
+    background-image: url('images/ui_bg_green_03.png');
+    height: 150%;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.6;
+}
+
+.my-container{
+    margin-left: 1rem;
+    margin-right: 1rem;
+    padding-top: 1rem;
+    position: relative;
+}
+
+
+#index-page {
     background-image: url('images/1920x1080-pikachu-bg.png');
     height: 100%;
     background-repeat: no-repeat;
@@ -26,15 +78,254 @@ h1 {
     opacity: 0.9;
 }
 
+.form-control {
+    border-radius: 0rem;
+    border-color:rgba(0,123,255);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    background-color: rgba(255,255,255,0.8)
+}
+
+::placeholder {
+    text-align: center;
+}
+
 .title {
     padding-top: 3rem! important;
     padding-left: 4rem! important;
 }
 
-.btn {
+.types-row,
+.panel-row,
+.move-row {
+    --bs-gutter-x: 0.5rem;
+}
+
+.card {
+    margin-bottom: 1rem;
+    border-radius: 0rem;    
+}
+
+.player-card {
+    box-shadow: 0px 0px 1px 2px rgba(0, 123, 255, 1);
+}
+
+.opponent-card {
+    box-shadow: 0px 0px 1px 2px rgba(220,53,69,1);
+}
+
+.battle-card {
+    box-shadow: 0px 0px 1px 2px rgba(49,57,58,1);
+}
+
+.player-card.small-card {
+    cursor: pointer;
+}
+
+.player-title, .opponent-title, .battle-title {
+    background-color: transparent;
+    padding: 1rem;
+    letter-spacing: 0.1rem;
+    font-size: 1.5rem;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.modal-title {
+    letter-spacing: 0.1rem;
+}
+
+.modal-content {
     border-radius: 0rem;
 }
 
-.mybtn {
+.player-title {
+    color: rgba(0, 123, 255);
+}
+
+.opponent-title {
+    color: rgba(220,53,69);
+}
+
+.battle-title, .modal-title {
+    color: rgba(49,57,58,1)
+}
+
+.pokemon-img {
+    height: 6rem;
+}
+.my-img {
+    height: 75%;
+    width: auto;
+}
+
+.card-title, .types-row, .move-row, .card-title-small, .attkMsg {
+    text-transform: capitalize;
+}
+
+.btn {
+    border-radius: 0rem;
     width: 100%;
+    letter-spacing: 0.1rem;
+    text-transform: uppercase;
+}
+
+.btn-danger:hover {
+    background-color: rgba(220,53,69);
+    cursor: default;
+}
+
+.btn-secondary:hover {
+    background-color: #6c757d;
+    cursor: default;
+    border-color: #6c757d;
+}
+
+.text-second-level {
+    font-size: 0.8rem;
+}
+
+.badge {
+    width: 100%;
+}
+
+hr {
+    margin-top: 0.6rem;
+    margin-bottom: 0.5rem;
+}
+
+.progress {
+    margin-bottom: 0.2rem;
+    height: 0.7rem;
+}
+
+.progress-text {
+    font-size: 0.7rem;
+    text-align: center;
+    margin-bottom: 0.2rem;
+}
+
+.bar-player {
+    background-color: rgba(0,123,255);
+}
+
+.bar-opponent {
+    background-color: #dc3455;
+}
+
+.small-card {
+    height: 7.5rem; 
+    width: 7.5rem;
+    padding-top: 0.5rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+.my-img-small {
+    height: 65%;
+    width: auto;
+    object-fit: contain;
+}
+.card-title-small {
+    margin-top: 0.3rem;
+    text-align: center;
+}
+
+.prog-small {
+    height: 0.3rem;
+    margin-top: 0.1rem;
+}
+
+.alert-banner {
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.alert-primary {
+    color: rgba(0,123,255);
+}
+
+.alert-danger {
+    color: #dc3455
+}
+
+.player-message {
+    display: flex;
+    justify-content: start;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.opponent-message {
+    display: flex;
+    justify-content: flex-end;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.win-message {
+    display:flex;
+    justify-content: center;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.fainted {
+    opacity: 0.5;
+}
+
+#battle-messages {
+    height: 27rem;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    background-color: white;
+    padding: 1rem;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+
+svg {
+    fill: rgba(49,57,58,1);
+    height: 2rem;
+    width: 2rem;
+    cursor: pointer;
+}
+
+svg:hover {
+    fill: rgba(49,57,58,0.8);
+}
+
+.tooltip-inner {
+    text-align: left;
+    font-size: 0.7rem;
+    text-transform: capitalize;
+}
+
+.choice-button {
+    margin-bottom: 1rem;
+}
+
+.modal-body {
+    font-size: 0.85rem;
+}
+
+@media (min-width: 768px) {
+    .alert-banner, .btn {
+        font-size: 0.85rem;
+    }
+
+    .alert-banner {
+        padding: 0.5rem;
+    }
+
+    .player-title, .opponent-title, .battle-title, .card-title {
+        font-size: 1.2rem;
+    }
+
 }
