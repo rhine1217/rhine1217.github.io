@@ -260,6 +260,10 @@ const getAllTypes = function (pokeDetails) {
     return types
 }
 
+const scrollAuto = function () {
+    $('#battle-messages').scrollTop($('#battle-messages').height()*3)
+}
+
 /* Define helper variables for initializing Pokemons and Players */
 
 let getTypeMatchById = []; // list of all the API Calls to get the type match up table 
@@ -637,8 +641,8 @@ const renderAttkMsg = function(a, d, dmg) {
             <span class="attkMsg">${attackPokemon.name}</span> used <span class="attkMsg">${attackPokemon.move.name}</span> on <span class="attkMsg">${defensePokemon.name}</span> and dealt ${dmg} damage!
             </div>
         </div>`)
-
-     $('#battle-messages').scrollTop($('#battle-messages').height())
+    
+    scrollAuto()
 
 }
 
@@ -665,7 +669,7 @@ const renderWinMsg = function(a) {
         </div>`
     )
 
-    $('#battle-messages').scrollTop($('#battle-messages').height())
+    scrollAuto()
 
 }
 
@@ -687,12 +691,12 @@ const renderFainted = function(pokeIdx) { //input = a or d, which is the pokeidx
 const renderNextRound = function() {
     $('#battle-messages').append(`
         <div class="row">
-            <div class="col-4 offset-4">
+            <div class="col-xl-4 offset-xl-4 col-lg-8 offset-lg-2 choice-button">
                 <button class="btn btn-outline-success">NEXT ROUND</button>
             </div>
         </div>`)
 
-    $('#battle-messages').scrollTop($('#battle-messages').height())
+    scrollAuto()
     
     $('#battle-messages').find('.btn').on('click', event => {
         event.preventDefault()
@@ -748,22 +752,22 @@ const renderGameOver = function() {
             </div>`
     )
 
-    $('#battle-messages').scrollTop($('#battle-messages').height())
+    scrollAuto()
 }
 
 const renderNewOrQuitGame = function() {
 
         $('#battle-messages').append(`
             <div class="row">
-                <div class="col-4 offset-2">
+                <div class="col-xl-4 offset-xl-2 col-lg-6 choice-button">
                 <button class="btn btn-outline-primary new-game-btn">NEW GAME</button>
                 </div>
-                <div class="col-4">
+                <div class="col-xl-4 col-lg-6 choice-button">
                 <button class="btn btn-outline-warning quit-game-btn">QUIT GAME</button>
                 </div>
             </div>`)
         
-        $('#battle-messages').scrollTop($('#battle-messages').height())
+        scrollAuto()
 } 
 
 const addNewOrQuitListener = function() {

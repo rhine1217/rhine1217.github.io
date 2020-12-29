@@ -306,3 +306,22 @@ svg:hover {
     font-size: 0.7rem;
     text-transform: capitalize;
 }
+
+.choice-button {
+    margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+    .alert-banner, .btn {
+        font-size: 0.85rem;
+    }
+
+    .alert-banner {
+        padding: 0.5rem;
+    }
+
+    .player-title, .opponent-title, .battle-title, .card-title {
+        font-size: 1.2rem;
+    }
+
+}
