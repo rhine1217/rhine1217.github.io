@@ -281,6 +281,7 @@ const initCount = function() {
     renderGameCount();
     
 }
+
 const initConfigs = function() {
 
     getPokemonById = []; // list of all the API Calls to get Pokemon details (* 6 times)

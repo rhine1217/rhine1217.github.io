@@ -1,9 +1,9 @@
-/* Color Pickers
-*/ 
+/* Color Pickers */ 
 
 :root {
-    --bgGreen: #5ef0ab;
-    --bgGrey: #31393a;
+    --bgGrey: rgba(49,57,58,1);
+    --player: rgba(0,123,255,1);
+    --opponent: rgba(220,53,69,1);
     --flying: #99b2e3;
     --fairy:#ee92e6;
     --rock:#c9bab8;
@@ -24,6 +24,7 @@
     --ground:#d98150;
 }
 
+
 * {
     font-family: 'Lato', sans-serif;
 }
@@ -32,9 +33,59 @@ body, html {
     height: 100%;
 }
 
+
+/* Index Page  */
+
+#index-page {
+    background-image: url('images/1920x1080-pikachu-bg.png');
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.8;
+}
+
+#logo {
+    height: 25%;
+    padding-top: 1rem!important;
+    padding-left: 2rem!important;
+}
+
+.title {
+    padding-top: 3rem! important;
+    padding-left: 4rem! important;
+}
+
+h1 { 
+    letter-spacing: 0.03em;
+    opacity: 0.9;
+}
+
+.form-control {
+    border-color:rgba(0,123,255);
+    text-align: center;
+    text-transform: uppercase;
+    background-color: rgba(255,255,255,0.8)
+}
+
+.modal-title, .form-control {
+    letter-spacing: 0.1rem;
+}
+
+.modal-content, .form-control {
+    border-radius: 0rem;
+}
+
+.modal-body {
+    font-size: 0.85rem;
+}
+
+/* Battle Page */
+
 #battle-page {
     position: relative;
 }
+
 #battle-page::before {
     content: "";
     background-image: url('images/ui_bg_green_03.png');
@@ -57,45 +108,6 @@ body, html {
     position: relative;
 }
 
-
-#index-page {
-    background-image: url('images/1920x1080-pikachu-bg.png');
-    height: 100%;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    opacity: 0.8;
-}
-
-#logo {
-    height: 25%;
-    padding-top: 1rem!important;
-    padding-left: 2rem!important;
-}
-
-h1 {
-    letter-spacing: 0.03em;
-    opacity: 0.9;
-}
-
-.form-control {
-    border-radius: 0rem;
-    border-color:rgba(0,123,255);
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 0.1rem;
-    background-color: rgba(255,255,255,0.8)
-}
-
-::placeholder {
-    text-align: center;
-}
-
-.title {
-    padding-top: 3rem! important;
-    padding-left: 4rem! important;
-}
-
 .types-row,
 .panel-row,
 .move-row {
@@ -108,15 +120,15 @@ h1 {
 }
 
 .player-card {
-    box-shadow: 0px 0px 1px 2px rgba(0, 123, 255, 1);
+    box-shadow: 0px 0px 1px 2px var(--player);
 }
 
 .opponent-card {
-    box-shadow: 0px 0px 1px 2px rgba(220,53,69,1);
+    box-shadow: 0px 0px 1px 2px var(--opponent);
 }
 
 .battle-card {
-    box-shadow: 0px 0px 1px 2px rgba(49,57,58,1);
+    box-shadow: 0px 0px 1px 2px var(--bgGrey);
 }
 
 .player-card.small-card {
@@ -132,24 +144,16 @@ h1 {
     text-transform: uppercase;
 }
 
-.modal-title {
-    letter-spacing: 0.1rem;
-}
-
-.modal-content {
-    border-radius: 0rem;
-}
-
 .player-title {
-    color: rgba(0, 123, 255);
+    color: var(--player);
 }
 
 .opponent-title {
-    color: rgba(220,53,69);
+    color: var(--opponent);
 }
 
 .battle-title, .modal-title {
-    color: rgba(49,57,58,1)
+    color: var(--bgGrey);
 }
 
 .pokemon-img {
@@ -207,11 +211,11 @@ hr {
 }
 
 .bar-player {
-    background-color: rgba(0,123,255);
+    background-color: var(--player);
 }
 
 .bar-opponent {
-    background-color: #dc3455;
+    background-color: var(--opponent);
 }
 
 .small-card {
@@ -227,6 +231,7 @@ hr {
     width: auto;
     object-fit: contain;
 }
+
 .card-title-small {
     margin-top: 0.3rem;
     text-align: center;
@@ -245,32 +250,29 @@ hr {
 }
 
 .alert-primary {
-    color: rgba(0,123,255);
+    color: var(--player);
 }
 
 .alert-danger {
-    color: #dc3455
+    color: var(--opponent);
+}
+
+.player-message, .opponent-message, .win-message {
+    display: flex;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 .player-message {
-    display: flex;
     justify-content: start;
-    padding-left: 1rem;
-    padding-right: 1rem;
 }
 
 .opponent-message {
-    display: flex;
     justify-content: flex-end;
-    padding-left: 1rem;
-    padding-right: 1rem;
 }
 
 .win-message {
-    display:flex;
     justify-content: center;
-    padding-left: 1rem;
-    padding-right: 1rem;
 }
 
 .fainted {
@@ -291,7 +293,7 @@ hr {
 }
 
 svg {
-    fill: rgba(49,57,58,1);
+    fill: var(--bgGrey);
     height: 2rem;
     width: 2rem;
     cursor: pointer;
@@ -311,9 +313,6 @@ svg:hover {
     margin-bottom: 1rem;
 }
 
-.modal-body {
-    font-size: 0.85rem;
-}
 
 @media (min-width: 768px) {
     .alert-banner, .btn {
