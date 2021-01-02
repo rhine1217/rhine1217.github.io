@@ -207,12 +207,12 @@ class Pokemon {
             randomUpper: 100,
         }
         
-        // Damage calc formula: 0.1 * P * A / D * M + 1
+        // Damage calc formula: 0.25 * P * A / D * M + 1
         // P = Power of the move of the attacking Pokemon
         // A = Attack of the attacking Pokemon
         // D = Defense of the defending Pokemon 
         // M = Modifier = Random * STAB * TypeEffectiveness
-            // Random = Random integer percentage between 0.85 and 1.00 (inclusive) 
+            // Random = Random integer percentage between 0.60 (randomLower) and 1.00 (randomUpper) (inclusive) 
             // STAB = Same Type Attack Bonus;  1.25 if Move type matches attacking Pokemon's type; else = 1 
             // TypeEffectiveness = Move (attacking Pokemon) type effectiveness against defending Pokemon's types 
         
@@ -336,7 +336,7 @@ const initPokemon = function () {
 
         const getRandomId = function() {
             randomID = Math.floor(Math.random() * gameSettings.pokeDex) + 1 // randomly generate an ID 
-            if (randomID === 132) {
+            if (randomID === 132) { // Pokemon ID 132 is Ditto who does not have a power move and cannot attack. 
                 getRandomId()
             }
         }
@@ -433,28 +433,35 @@ const renderLgPokemons = function() {
             }
         }
         
+        // find the large card to update
+
         targetCard = $(`#${target}-${cardIdx}-lg`)
         pokemon = newPokemonList[i]
         pokeId = pokemon.id
 
+        // if this card shows 'fainted' from prior rounds, clear that class
+
         targetCard.removeClass('fainted')
         
-        targetCard.find('img').attr('src',`images/${imageLookup[pokeId-1]}`)
-        targetCard.find('img').attr('data-original-title',`Attack: ${pokemon.attack}<br>Defense: ${pokemon.defense}`)
+        targetCard.find('img').attr('src',`images/${imageLookup[pokeId-1]}`) // update the Pokemon image
+        targetCard.find('img').attr('data-original-title',`Attack: ${pokemon.attack}<br>Defense: ${pokemon.defense}`) // update the tooltip that shows attack and defense in the large card 
 
-        targetCard.find('.card-title').text(pokemon.name)
+        targetCard.find('.card-title').text(pokemon.name) // update the title to Pokemon name
 
-        targetCard.find('.progress-text').text(`${pokemon.currHP} / ${pokemon.hp} HP`)
+        // update the HP text, bar width, aria-valuenow
+
+        targetCard.find('.progress-text').text(`${pokemon.currHP} / ${pokemon.hp} HP`) 
         targetCard.find('.progress-bar').css('width', '100%')
         targetCard.find('.progress-bar').attr('aria-valuenow', '100')
 
-        targetCard.find('.types-row').empty()
-        if (pokemon.types.length === 1) {
+        targetCard.find('.types-row').empty()        // empty any existing types badge 
+
+        if (pokemon.types.length === 1) {        // if the Pokemon has one type only
             targetCard.find('.types-row').addClass('d-flex justify-content-center')
             targetCard.find('.types-row').append(
                 `<div class="col-4">
                     <div style="background-color: var(--${pokemon.types[0]})" class="badge badge-pill">${pokemon.types[0]}</div></div>`)
-        } else if (pokemon.types.length === 2) {
+        } else if (pokemon.types.length === 2) { // if the Pokemon has two types
             targetCard.find('.types-row').removeClass('d-flex justify-content-center')
             targetCard.find('.types-row').append(
                 `<div class="col-4 offset-2">
@@ -463,9 +470,13 @@ const renderLgPokemons = function() {
                     <div style="background-color: var(--${pokemon.types[1]})" class="badge badge-pill">${pokemon.types[1]}</div></div>`)
         }
 
+        // change the button from 'fainted' to either 'attack!' (for player Pokemons) or 'attacking' (for computer Pokemons) 
+
         targetCard.find('.btn').removeClass('btn-secondary')
         targetCard.find('.btn').addClass(`${btn.class}`)
         targetCard.find('.btn').text(`${btn.text}`)
+
+        // display both player and computer's first large Pokemon card
 
         if (cardIdx === 0) {
             targetCard.removeClass('d-none')
